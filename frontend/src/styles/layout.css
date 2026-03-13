@@ -1,0 +1,83 @@
+/* App shell */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.app-main {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+/* Global Floating Actions on Desktop */
+.global-actions {
+  position: absolute;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+}
+
+@media (max-width: 767px) {
+  .global-actions {
+    display: none;
+  }
+
+  .app-main {
+    height: calc(100vh - var(--bottom-nav-height));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+.action-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+
+.action-btn:hover {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.action-btn.active {
+  background: var(--bg-card);
+  color: var(--accent);
+}
+
+.action-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.action-btn.map-btn svg { width: 18px; height: 18px; }
+
+/* Special blue button for location */
+.action-btn.locate-btn {
+  background: var(--accent);
+  color: white;
+  border-color: transparent;
+}
+.action-btn.locate-btn:hover {
+  background: var(--accent-hover);
+}
