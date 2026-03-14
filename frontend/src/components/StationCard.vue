@@ -45,13 +45,13 @@ const isDeltaPositive = computed(() => priceDelta.value && parseFloat(priceDelta
 const isDeltaNegative = computed(() => priceDelta.value && parseFloat(priceDelta.value) < 0)
 
 const handleSummaryClick = () => {
-  if (window.innerWidth < 768) {
+  if (!isExpanded.value) {
     isExpanded.value = true
   }
 }
 
 const closeDetail = () => {
-  if (window.innerWidth < 768) {
+  if (isExpanded.value) {
     isExpanded.value = false
   } else {
     emit('close')

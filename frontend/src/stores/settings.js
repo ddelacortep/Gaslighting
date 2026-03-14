@@ -45,6 +45,11 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
+  function toggleDarkMode() {
+    darkMode.value = !darkMode.value
+    save({ darkMode: darkMode.value })
+  }
+
   load()
 
   return {
@@ -55,5 +60,6 @@ export const useSettingsStore = defineStore('settings', () => {
     darkMode,
     load,
     save,
+    toggleDarkMode,
   }
 })

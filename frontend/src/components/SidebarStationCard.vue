@@ -10,26 +10,14 @@ const props = defineProps({
 const emit = defineEmits(['locate'])
 
 const gasStore = useGasStationsStore()
-const favoritesStore = {
-  // Placeholder until we implement the actual favorites store link
-  isFavorite: (id) => false,
-  toggle: (station) => {},
-}
 
 import { useFavoritesStore } from '@/stores/favorites'
-const trueFavoritesStore = useFavoritesStore()
+const favoritesStore = useFavoritesStore()
 
-const isFavorited = computed(() => {
-  return trueFavoritesStore.favorites.some(f => f.externalProviderId === props.station.id)
-})
+const isFavorited = computed(() => favoritesStore.isFavorite(props.station.id))
 
 const toggleFavorite = () => {
-  if (isFavorited.value) {
-    const fav = trueFavoritesStore.favorites.find(f => f.externalProviderId === props.station.id)
-    if (fav) trueFavoritesStore.remove(fav.id)
-  } else {
-    trueFavoritesStore.add(props.station)
-  }
+  favoritesStore.toggleFavorite(props.station)
 }
 
 const activeFuel = computed(() => gasStore.activeFuel)
@@ -216,8 +204,8 @@ const distance = computed(() => {
   color: var(--accent);
   border: none;
   border-radius: var(--radius-sm);
-  padding: 10px;
-  font-size: 13px;
+  padding: 12px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   display: flex;

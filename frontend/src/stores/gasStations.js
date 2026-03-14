@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 const API_URL = '/ministerio-api/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
+const SEARCH_RADIUS_KM = 25
 
 function parsePrice(str) {
   if (!str || str.trim() === '') return null
@@ -45,17 +46,35 @@ export const useGasStationsStore = defineStore('gasStations', () => {
   const error = ref(null)
   const userLat = ref(null)
   const userLng = ref(null)
+  const searchCenterLat = ref(null)
+  const searchCenterLng = ref(null)
+  // Incrementar para señalar al mapa que debe volar a la ubicación del usuario
+  const flyToUserRequested = ref(0)
 
   const filteredStations = computed(() =>
     stations.value.filter(s => s.prices[activeFuel.value] !== null)
   )
 
+  // Distances computed reactively from search center (if set) or user GPS
   const stationsWithDistance = computed(() => {
-    const list = [...filteredStations.value]
-    if (userLat.value !== null && userLng.value !== null) {
-      return list.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
+    const cLat = searchCenterLat.value ?? userLat.value
+    const cLng = searchCenterLng.value ?? userLng.value
+
+    if (cLat === null || cLng === null) {
+      return filteredStations.value
     }
-    return list
+
+    const withDist = filteredStations.value.map(s => ({
+      ...s,
+      distance: haversine(cLat, cLng, s.lat, s.lng),
+    }))
+
+    // Apply radius only when a search center (not GPS) is active
+    const inRange = searchCenterLat.value !== null
+      ? withDist.filter(s => s.distance <= SEARCH_RADIUS_KM)
+      : withDist
+
+    return inRange.sort((a, b) => a.distance - b.distance)
   })
 
   async function fetchStations() {
@@ -66,10 +85,7 @@ export const useGasStationsStore = defineStore('gasStations', () => {
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       const raw = data['ListaEESSPrecio'] || []
-      stations.value = raw
-        .filter(s => s['IDProvincia'] === '28')
-        .map(normalizeStation)
-      calculateDistances()
+      stations.value = raw.map(normalizeStation)
     } catch (e) {
       console.error('[gasStations] fetchStations error:', e)
       error.value = e.message || 'Error fetching stations'
@@ -90,15 +106,21 @@ export const useGasStationsStore = defineStore('gasStations', () => {
     selectedStation.value = null
   }
 
-  function calculateDistances() {
-    if (userLat.value === null || userLng.value === null) return
-    stations.value = stations.value.map(s => ({
-      ...s,
-      distance: haversine(userLat.value, userLng.value, s.lat, s.lng),
-    }))
+  // Set a geographic search center (from geocoding). Clears GPS priority.
+  function setSearchCenter(lat, lng) {
+    searchCenterLat.value = lat
+    searchCenterLng.value = lng
   }
 
-  function requestGeolocation() {
+  // Set user GPS location. Clears any active search center.
+  function setUserLocation(lat, lng) {
+    userLat.value = lat
+    userLng.value = lng
+    searchCenterLat.value = null
+    searchCenterLng.value = null
+  }
+
+  function requestGeolocation(triggerFly = false) {
     if (!navigator.geolocation) {
       error.value = 'Geolocation is not supported by this browser.'
       return
@@ -107,7 +129,9 @@ export const useGasStationsStore = defineStore('gasStations', () => {
       position => {
         userLat.value = position.coords.latitude
         userLng.value = position.coords.longitude
-        calculateDistances()
+        searchCenterLat.value = null
+        searchCenterLng.value = null
+        if (triggerFly) flyToUserRequested.value++
       },
       err => {
         console.error('[gasStations] Geolocation error:', err)
@@ -115,6 +139,11 @@ export const useGasStationsStore = defineStore('gasStations', () => {
       }
     )
   }
+
+  // True when distances are computed from a real center (GPS or search)
+  const hasCenter = computed(() =>
+    userLat.value !== null || searchCenterLat.value !== null
+  )
 
   return {
     stations,
@@ -124,13 +153,16 @@ export const useGasStationsStore = defineStore('gasStations', () => {
     error,
     userLat,
     userLng,
+    flyToUserRequested,
+    hasCenter,
     filteredStations,
     stationsWithDistance,
     fetchStations,
     setActiveFuel,
     selectStation,
     clearSelection,
+    setUserLocation,
+    setSearchCenter,
     requestGeolocation,
-    calculateDistances,
   }
 })

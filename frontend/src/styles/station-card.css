@@ -78,14 +78,14 @@
 }
 
 .station-card__close {
-  position: absolute;
-  top: 24px;
-  right: 24px;
   background: none;
   border: none;
   color: var(--text-dark);
   cursor: pointer;
   padding: 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: -2px;
 }
 
 /* Favorite Action */
@@ -285,11 +285,6 @@
     font-size: 20px;
   }
 
-  .station-card.is-summary .station-card__close {
-    top: 12px;
-    right: 12px;
-  }
-
   .station-card.is-summary .mobile-summary-actions {
     display: flex;
     border-top: 1px solid var(--border-color);
@@ -345,8 +340,52 @@
 }
 
 @media (min-width: 768px) {
-  .drawer-handle,
-  .mobile-summary-actions {
+  .drawer-handle {
     display: none;
+  }
+
+  /* Summary mode on desktop */
+  .station-card.is-summary {
+    cursor: pointer;
+  }
+
+  /* Show summary actions on desktop too */
+  .station-card.is-summary .mobile-summary-actions {
+    display: flex;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .mobile-action-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 12px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .mobile-action-btn:first-child {
+    border-right: 1px solid var(--border-color);
+  }
+
+  .mobile-action-btn.primary {
+    color: var(--accent);
+  }
+
+  .mobile-action-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Desktop expanded card: scrollable within the wrapper */
+  .station-card.is-expanded {
+    max-height: 80vh;
+    overflow-y: auto;
   }
 }

@@ -14,27 +14,26 @@ const route = useRoute()
 
 onMounted(() => {
   gasStore.fetchStations()
-  
-  // Request location on mount
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        gasStore.setUserLocation([pos.coords.latitude, pos.coords.longitude])
-      },
-      (err) => console.warn('Geolocation error:', err)
-    )
-  }
+  gasStore.requestGeolocation(true)
 })
 
 const toggleDarkMode = () => {
   settingsStore.toggleDarkMode()
+}
+
+const locateUser = () => {
+  gasStore.requestGeolocation(true)
 }
 </script>
 
 <template>
   <div class="app-shell" :class="{ 'theme-dark': settingsStore.darkMode }">
     <main class="app-main">
-      <RouterView />
+      <RouterView v-slot="{ Component }">
+        <KeepAlive include="MapView">
+          <component :is="Component" />
+        </KeepAlive>
+      </RouterView>
     </main>
 
     <!-- Global Floating Actions (Desktop Only - Hidden via CSS on mobile) -->
@@ -46,7 +45,7 @@ const toggleDarkMode = () => {
         </svg>
       </button>
 
-      <button class="action-btn" title="Mi ubicación">
+      <button class="action-btn" title="Mi ubicación" @click="locateUser">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
         </svg>
