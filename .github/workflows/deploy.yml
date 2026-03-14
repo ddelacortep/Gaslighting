@@ -116,6 +116,7 @@ jobs:
             mkdir -p \"\$BASE/shared/storage/logs\" \"\$BASE/shared/bootstrap-cache\"
             sudo chown -R www-data:www-data \"\$BASE/shared/storage\" \"\$BASE/shared/bootstrap-cache\"
             sudo chmod -R 775 \"\$BASE/shared/storage\" \"\$BASE/shared/bootstrap-cache\"
+            sudo chmod g+s \"\$BASE/shared/storage\" \"\$BASE/shared/bootstrap-cache\"
           "
 
       - name: Upload backend source
