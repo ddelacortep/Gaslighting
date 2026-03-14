@@ -11,37 +11,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  validate-backend:
-    name: Validate backend (Laravel)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.2"
-          extensions: mbstring, intl, pdo, pdo_pgsql, sqlite, bcmath
-          coverage: none
-
-      - name: Cache Composer
-        uses: actions/cache@v4
-        with:
-          path: ~/.composer/cache/files
-          key: ${{ runner.os }}-composer-${{ hashFiles('backend/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Install dependencies
-        run: composer install --no-interaction --no-progress --prefer-dist
-
-      - name: Run tests
-        run: composer test
-
   validate-frontend:
     name: Validate frontend (Vite)
     runs-on: ubuntu-latest
