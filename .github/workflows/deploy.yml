@@ -40,6 +40,10 @@ jobs:
         run: composer install --no-interaction --no-progress --prefer-dist
 
       - name: Run tests
+        env:
+          APP_KEY: base64:u64YBy7SnoGf5+6y/SIs8B3v7E6S9i6G7fW8u9IuE4c=
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
         run: composer test
 
   validate-frontend:
