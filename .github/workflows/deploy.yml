@@ -172,31 +172,3 @@ jobs:
         run: |
           echo "Backend deployed to release: ${{ steps.release.outputs.release_path }}"
           echo "Frontend deploy runs in AWS Amplify (Git-connected)."
-
-    name: Build and Push to Docker Hub
-
-    on:
-    push:
-        branches:
-        - main  # Se activa cuando subes cambios a la rama main
-
-    jobs:
-    build-and-push:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout del código
-            uses: actions/checkout@v4
-
-        - name: Iniciar sesión en Docker Hub
-            uses: docker/login-action@v3
-            with:
-            username: ${{ secrets.DOCKER_HUB_USERNAME }}
-            password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
-        - name: Construir y subir imagen
-            uses: docker/build-push-action@v5
-            with:
-            context: .
-            push: true
-            # Reemplaza 'tu-usuario' por tu nombre de Docker Hub
-            tags: tu-usuario/gaslighting-app:latest
