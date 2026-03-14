@@ -159,7 +159,7 @@ jobs:
             ln -sfn \"\$RELEASE\" \"\$CURRENT\"
 
             if [ -n \"${BACKEND_HEALTHCHECK_URL}\" ]; then
-              if ! curl -fsS \"${BACKEND_HEALTHCHECK_URL}\" > /dev/null; then
+              if ! curl -fsS --max-time 30 \"${BACKEND_HEALTHCHECK_URL}\" > /dev/null; then
                 echo 'Healthcheck failed, rolling back symlink'
                 if [ -n \"\$PREVIOUS\" ]; then
                   ln -sfn \"\$PREVIOUS\" \"\$CURRENT\"
