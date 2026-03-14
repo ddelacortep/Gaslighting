@@ -130,25 +130,26 @@ jobs:
 
       - name: Install and switch release
         run: |
-          ssh -p "${EC2_PORT:-22}" "${EC2_USER}@${EC2_HOST}" "
+            ssh -p "${EC2_PORT:-22}" "${EC2_USER}@${EC2_HOST}" "
             set -e
 
             BASE='${DEPLOY_PATH:-/var/www/gaslighting}'
             RELEASE='${{ steps.release.outputs.release_path }}'
-            CURRENT=\"$BASE/current\"
-            PREVIOUS=\"$(readlink -f \"$CURRENT\" || true)\"
+            CURRENT=\"\$BASE/current\"
+            PREVIOUS=\"\$(readlink -f \"\$CURRENT\" || true)\"
 
-            if [ ! -f \"$BASE/shared/.env\" ]; then
-              echo 'Missing shared environment file at $BASE/shared/.env'
+            # Aquí es donde fallaba: añadimos \ antes de $BASE
+            if [ ! -f \"\$BASE/shared/.env\" ]; then
+              echo \"Missing shared environment file at \$BASE/shared/.env\"
               exit 1
             fi
 
-            cd \"$RELEASE\"
-            ln -sfn \"$BASE/shared/.env\" .env
+            cd \"\$RELEASE\"
+            ln -sfn \"\$BASE/shared/.env\" .env
             rm -rf storage
-            ln -sfn \"$BASE/shared/storage\" storage
+            ln -sfn \"\$BASE/shared/storage\" storage
             rm -rf bootstrap/cache
-            ln -sfn \"$BASE/shared/bootstrap-cache\" bootstrap/cache
+            ln -sfn \"\$BASE/shared/bootstrap-cache\" bootstrap/cache
 
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
