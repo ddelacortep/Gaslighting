@@ -1,6 +1,6 @@
 const API_URL =
-  import.meta.env.VITE_GASOLINERAS_URL ??
-  '/ministerio-api/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
+  import.meta.env.VITE_GASOLINERAS_URL ||
+  'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
 
 /**
  * Fetch all gas stations from the Spanish Ministry of Energy API.
