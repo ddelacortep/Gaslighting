@@ -6,9 +6,6 @@ applications:
         preBuild:
           commands:
             - npm ci
-            - echo "VITE_APP_URL_BASE=$VITE_APP_URL_BASE" > .env
-            - echo "VITE_GASOLINERAS_URL=$VITE_GASOLINERAS_URL" >> .env
-            - echo "--- .env content ---" && cat .env
         build:
           commands:
             - npm run build
