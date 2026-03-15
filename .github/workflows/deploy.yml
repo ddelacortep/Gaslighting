@@ -69,7 +69,7 @@ jobs:
       - name: Build frontend
         run: npm run build
         env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_APP_URL_BASE: ${{ secrets.VITE_APP_URL_BASE }}
           VITE_GASOLINERAS_URL: ${{ secrets.VITE_GASOLINERAS_URL }}
 
   deploy-backend-ec2:
