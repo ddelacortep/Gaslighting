@@ -79,53 +79,6 @@ Gaslighting es una aplicación web progresiva (PWA) que muestra en tiempo real l
           └─────────────────┘
 ```
 
-### Estructura de directorios
-
-```
-gaslighting/
-├── frontend/                  # SPA Vue 3
-│   ├── src/
-│   │   ├── views/             # MapView, FavoritosView, AjustesView
-│   │   ├── components/        # AppBottomNav, StationCard, FuelFilterBar...
-│   │   ├── stores/            # Pinia: gasStations, favorites, settings
-│   │   ├── composables/       # useMapView, useFavoritosView...
-│   │   ├── services/          # api.js (backend), gasolineras.js (MINETUR)
-│   │   ├── router/            # Rutas Vue Router
-│   │   └── styles/            # CSS global (variables, layout, map...)
-│   └── public/                # favicon, manifest.json, iconos PWA
-├── backend/                   # API Laravel
-│   ├── app/
-│   │   ├── Http/Controllers/  # UserController, FavoriteController
-│   │   └── Models/            # User, GasStation, FavoriteGasStation
-│   ├── routes/api.php         # Definición de endpoints REST
-│   └── database/              # Migraciones y seeders
-├── .github/workflows/         # GitHub Actions CI/CD
-├── docker-compose.yml         # Entorno de desarrollo local
-└── amplify.yml                # Configuración build Amplify
-```
-
----
-
-## API REST
-
-Base URL: `https://gasapi.ddelacortep.tech/api`
-
-### Usuarios
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/users/init` | Registra una instancia de usuario (anónima, UUID) |
-| `PUT` | `/users/{id}/activity` | Actualiza timestamp de última actividad |
-
-### Favoritas
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/favorites` | Añade una gasolinera a favoritas |
-| `GET` | `/favorites/{userId}` | Obtiene las favoritas de un usuario |
-| `PUT` | `/favorites/{favoriteId}` | Actualiza nombre o notas de una favorita |
-| `DELETE` | `/favorites/{favoriteId}` | Elimina una favorita |
-
----
-
 ## Instalación y desarrollo local
 
 ### Requisitos
@@ -133,49 +86,6 @@ Base URL: `https://gasapi.ddelacortep.tech/api`
 - PHP 8.2+
 - Composer
 - Docker & Docker Compose
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-cp .env.example .env        # Configura VITE_APP_URL_BASE y VITE_GASOLINERAS_URL
-npm run dev
-```
-
-### Backend
-
-```bash
-cd backend
-composer install
-cp .env.example .env        # Configura DB_* y APP_KEY
-php artisan key:generate
-php artisan migrate
-
-# O con Docker (PostgreSQL incluido):
-docker-compose up -d
-```
-
-### Variables de entorno
-
-**Frontend (`.env`):**
-```env
-VITE_APP_URL_BASE=http://localhost:8000
-VITE_GASOLINERAS_URL=https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/
-```
-
-**Backend (`.env`):**
-```env
-APP_NAME=Gaslighting
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=gaslighting
-DB_USERNAME=postgres
-DB_PASSWORD=secret
-```
-
----
 
 ## Despliegue
 
