@@ -44,6 +44,7 @@ const sortedStations = computed(() => {
 })
 
 const filteredStations = computed(() => {
+  if (!gasStore.hasCenter) return []
   const query = searchQuery.value.toLowerCase().trim()
   const base = query
     ? sortedStations.value.filter(s =>
@@ -131,7 +132,10 @@ const averagePrice = computed(() => {
         <span class="sort-count">{{ filteredStations.length }} result.</span>
       </div>
 
-      <div class="map-sidebar-list">
+      <div v-if="!gasStore.hasCenter" class="sidebar-empty-state">
+        Busca una ciudad o activa tu ubicación para ver gasolineras cercanas.
+      </div>
+      <div v-else class="map-sidebar-list">
         <SidebarStationCard
           v-for="station in filteredStations"
           :key="station.id"
