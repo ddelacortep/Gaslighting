@@ -370,6 +370,7 @@
     box-shadow: var(--shadow-md);
     flex: 1;
     min-width: 0;
+    font-size: 16px;
   }
 
   .btn-map-action {
