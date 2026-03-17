@@ -71,10 +71,7 @@ export const useGasStationsStore = defineStore('gasStations', () => {
       distance: haversine(cLat, cLng, s.lat, s.lng),
     }))
 
-    // Apply radius only when a search center (not GPS) is active
-    const inRange = searchCenterLat.value !== null
-      ? withDist.filter(s => s.distance <= SEARCH_RADIUS_KM)
-      : withDist
+    const inRange = withDist.filter(s => s.distance <= SEARCH_RADIUS_KM)
 
     return inRange.sort((a, b) => a.distance - b.distance)
   })
