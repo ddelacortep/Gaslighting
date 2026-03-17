@@ -32,27 +32,28 @@ onActivated(() => {
 const searchQuery = ref('')
 
 const sortedStations = computed(() => {
-  const list = [...gasStore.stationsWithDistance]
+  // Same set as the map: nearbyCount nearest stations within radius
+  const mapSet = gasStore.stationsWithDistance.slice(0, settingsStore.nearbyCount)
   if (sortMode.value === 'price') {
-    list.sort((a, b) => {
+    return [...mapSet].sort((a, b) => {
       const pa = a.prices?.[gasStore.activeFuel] ?? Infinity
       const pb = b.prices?.[gasStore.activeFuel] ?? Infinity
       return pa - pb
     })
   }
-  return list
+  return mapSet
 })
 
 const filteredStations = computed(() => {
   if (!gasStore.hasCenter) return []
   const query = searchQuery.value.toLowerCase().trim()
-  const base = query
-    ? sortedStations.value.filter(s =>
-        s.name.toLowerCase().includes(query) ||
-        s.address.toLowerCase().includes(query)
-      )
-    : sortedStations.value
-  return base.slice(0, settingsStore.nearbyCount)
+  if (query) {
+    return sortedStations.value.filter(s =>
+      s.name.toLowerCase().includes(query) ||
+      s.address.toLowerCase().includes(query)
+    )
+  }
+  return sortedStations.value
 })
 
 const handleLocate = (station) => {
