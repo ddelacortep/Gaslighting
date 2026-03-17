@@ -1,7 +1,9 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
-const API_URL = '/ministerio-api/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
+const API_URL =
+  import.meta.env.VITE_GASOLINERAS_URL ||
+  '/ministerio-api/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
 const SEARCH_RADIUS_KM = 25
 
 function parsePrice(str) {
