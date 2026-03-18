@@ -60,38 +60,40 @@ const isActive = (path) => route.path === path
   bottom: 0;
   left: 0;
   right: 0;
-  height: var(--bottom-nav-height);
+  height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
   background: var(--bg-sidebar);
   border-top: 1px solid var(--border-color);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  z-index: 1000;
+  align-items: flex-start;
+  padding-top: 8px;
   padding-bottom: env(safe-area-inset-bottom);
+  z-index: 1000;
 }
 
 .nav-item {
   flex: 1;
-  height: 100%;
+  height: var(--bottom-nav-height);
   background: none;
   border: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
   color: var(--text-dark);
   cursor: pointer;
   transition: color var(--transition);
 }
 
 .nav-icon {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
 }
 
 .nav-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
 }
 
