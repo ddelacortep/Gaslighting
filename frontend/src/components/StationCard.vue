@@ -3,6 +3,8 @@ import '@/styles/station-card.css'
 import { ref, toRef, computed } from 'vue'
 import { useStationCard } from '@/composables/useStationCard'
 import { useSettingsStore } from '@/stores/settings'
+import { useGasStationsStore } from '@/stores/gasStations'
+import wazeIcon from '@/img/waze_icon.png'
 
 const props = defineProps({
   station: { type: Object, required: true },
@@ -13,6 +15,26 @@ const emit = defineEmits(['close'])
 
 const stationRef = toRef(props, 'station')
 const settingsStore = useSettingsStore()
+const gasStore = useGasStationsStore()
+
+function openNavigation(app) {
+  const { lat, lng } = props.station
+  const uLat = gasStore.userLat
+  const uLng = gasStore.userLng
+  let url
+  if (app === 'google') {
+    url = uLat != null
+      ? `https://www.google.com/maps/dir/?api=1&origin=${uLat},${uLng}&destination=${lat},${lng}`
+      : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+  } else if (app === 'waze') {
+    url = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`
+  } else if (app === 'apple') {
+    url = uLat != null
+      ? `https://maps.apple.com/?saddr=${uLat},${uLng}&daddr=${lat},${lng}`
+      : `https://maps.apple.com/?daddr=${lat},${lng}`
+  }
+  window.open(url, '_blank')
+}
 
 const isExpanded = ref(false)
 
@@ -122,6 +144,26 @@ const closeDetail = () => {
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
           </svg>
           {{ isFavorited ? 'Eliminar de favoritos' : 'Añadir a favoritos' }}
+        </button>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="station-card__navigation">
+        <button class="nav-btn nav-btn--google" @click.stop="openNavigation('google')">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+          Google Maps
+        </button>
+        <button class="nav-btn nav-btn--waze" @click.stop="openNavigation('waze')">
+          <img :src="wazeIcon" class="nav-btn__img" alt="Waze" />
+          Waze
+        </button>
+        <button class="nav-btn nav-btn--apple" @click.stop="openNavigation('apple')">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.029 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
+          </svg>
+          Apple Maps
         </button>
       </div>
 

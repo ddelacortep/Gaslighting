@@ -1,7 +1,7 @@
 /* App shell */
 .app-shell {
   display: flex;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
   background-color: var(--bg-app);
@@ -34,8 +34,7 @@
   }
 
   .app-main {
-    height: calc(100vh - var(--bottom-nav-height));
-    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(100dvh - var(--bottom-nav-height) - env(safe-area-inset-bottom));
   }
 }
 
