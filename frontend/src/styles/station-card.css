@@ -88,6 +88,46 @@
   margin-top: -2px;
 }
 
+/* Navigation Buttons */
+.station-card__navigation {
+  display: flex;
+  gap: 8px;
+  padding: 0 24px 20px;
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-modal-panel);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.nav-btn:hover { opacity: 0.8; }
+
+.nav-btn--google { color: #1A73E8; }
+.nav-btn--waze   { color: #00AAFF; }
+.nav-btn--apple  { color: #007AFF; }
+
+.nav-btn__img {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  object-fit: contain;
+}
+
+.theme-dark .nav-btn__img {
+  filter: brightness(0.8) saturate(0.85);
+}
+
 /* Favorite Action */
 .station-card__actions {
   padding: 0 24px 20px;
