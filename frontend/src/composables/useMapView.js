@@ -20,7 +20,7 @@ const TILE_DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png
 const TILE_LIGHT = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
 const TILE_SATELLITE = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
 const TILE_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-const TILE_SAT_ATTRIBUTION = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+const TILE_SAT_ATTRIBUTION = 'Tiles &copy; Esri'
 
 function createMarkerIcon(station, isSelected) {
   const color = brandColor(station.brand)
@@ -65,21 +65,21 @@ export function useMapView(mapContainerRef) {
     }
   }
 
-  function getTileConfig() {
-    if (mapType.value === 'satellite') {
-      return { url: TILE_SATELLITE, attribution: TILE_SAT_ATTRIBUTION }
-    }
-    return {
-      url: settingsStore.darkMode ? TILE_DARK : TILE_LIGHT,
-      attribution: TILE_ATTRIBUTION,
-    }
-  }
-
   function updateTileLayer() {
     if (!mapInstance.value) return
     if (tileLayer.value) tileLayer.value.remove()
-    const { url, attribution } = getTileConfig()
-    tileLayer.value = L.tileLayer(url, { attribution, maxZoom: 19 }).addTo(mapInstance.value)
+    if (mapType.value === 'satellite') {
+      tileLayer.value = L.tileLayer(TILE_SATELLITE, {
+        attribution: TILE_SAT_ATTRIBUTION,
+        maxZoom: 19,
+      }).addTo(mapInstance.value)
+    } else {
+      const url = settingsStore.darkMode ? TILE_DARK : TILE_LIGHT
+      tileLayer.value = L.tileLayer(url, {
+        attribution: TILE_ATTRIBUTION,
+        maxZoom: 19,
+      }).addTo(mapInstance.value)
+    }
   }
 
   function toggleMapType() {
@@ -113,8 +113,7 @@ export function useMapView(mapContainerRef) {
       zoomControl: false,
     })
 
-    const { url, attribution } = getTileConfig()
-    tileLayer.value = L.tileLayer(url, { attribution, maxZoom: 19 }).addTo(mapInstance.value)
+    updateTileLayer()
 
     // Zoom control only on desktop (hidden via CSS on mobile)
     L.control.zoom({ position: 'topright' }).addTo(mapInstance.value)
