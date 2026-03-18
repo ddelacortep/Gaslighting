@@ -48,6 +48,22 @@ export function useMapView(mapContainerRef) {
   const mapBounds = ref(null)
   const mapType = ref('map') // 'map' | 'satellite'
   const markerMap = new Map()
+  const userMarker = ref(null)
+
+  function placeUserMarker(lat, lng) {
+    if (!mapInstance.value) return
+    const icon = L.divIcon({
+      className: '',
+      html: `<div class="user-location-dot"><div class="user-location-dot__ring"></div><div class="user-location-dot__core"></div></div>`,
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+    })
+    if (userMarker.value) {
+      userMarker.value.setLatLng([lat, lng])
+    } else {
+      userMarker.value = L.marker([lat, lng], { icon, zIndexOffset: 500 }).addTo(mapInstance.value)
+    }
+  }
 
   function getTileConfig() {
     if (mapType.value === 'satellite') {
@@ -83,6 +99,7 @@ export function useMapView(mapContainerRef) {
 
   function flyToUser() {
     if (gasStore.userLat !== null && gasStore.userLng !== null) {
+      placeUserMarker(gasStore.userLat, gasStore.userLng)
       flyTo(gasStore.userLat, gasStore.userLng, GPS_ZOOM)
     }
   }
@@ -158,6 +175,7 @@ export function useMapView(mapContainerRef) {
       mapInstance.value = null
     }
     markerMap.clear()
+    userMarker.value = null
   }
 
   // Nearest N stations when a center is known, viewport-based fallback otherwise
